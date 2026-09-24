@@ -9,11 +9,11 @@ class SystemTheme(Base):
     __tablename__ = "system_themes"
 
     id: Mapped[str] = mapped_column(
-        String, primary_primary_key=True, default=lambda: str(uuid.uuid4())
+        String, 
+        primary_key=True, 
+        default=lambda: str(uuid.uuid4())
     )
-    theme_name: Mapped[str] = mapped_column(
-        String(50), nullable=False
-    )  # masalan: 'new_year', 'spring_navruz', 'default'
+    theme_name: Mapped[str] = mapped_column(String, nullable=False)  # masalan: 'new_year', 'spring_navruz', 'default'
     is_active: Mapped[bool] = mapped_column(
         Boolean, default=False
     )  # Hozirda faolmi?
