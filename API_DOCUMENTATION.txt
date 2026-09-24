@@ -1,0 +1,338 @@
+================================================================================
+                    APPCENTRE BY IDEV — API DOCUMENTATION (v1)
+================================================================================
+
+[GENERAL INFO]
+Base URL:     https://your-domain.vercel.app/api/v1
+Auth Type:    Bearer Token (JWT)
+Header Name:  Authorization: Bearer <your_access_token>
+
+
+================================================================================
+SECTION 1: PUBLIC / USER ENDPOINTS (Mobil Ilova & Do'kon uchun)
+================================================================================
+
+--------------------------------------------------------------------------------
+1.1 REGISTER (Ro'yxatdan o'tish)
+--------------------------------------------------------------------------------
+Endpoint:     POST /auth/register
+Auth:         No
+
+[Request Body]
+{
+  "username": "idev_dev",
+  "first_name": "Ibrohim",
+  "last_name": "Developer",
+  "email": "dev@idev.uz",
+  "phone_number": "+998901234567",
+  "password": "StrongPassword123!"
+}
+
+[Response 201 Created]
+{
+  "id": "e4f8a3c2-1234-4567-89ab-cdef01234567",
+  "username": "idev_dev",
+  "first_name": "Ibrohim",
+  "last_name": "Developer",
+  "email": "dev@idev.uz",
+  "phone_number": "+998901234567",
+  "is_active": true
+}
+
+
+--------------------------------------------------------------------------------
+1.2 LOGIN (Tizimga kirish va Token olish)
+--------------------------------------------------------------------------------
+Endpoint:     POST /auth/login
+Auth:         No
+
+[Request Body]
+{
+  "username_or_email": "idev_dev",
+  "password": "StrongPassword123!"
+}
+
+[Response 200 OK]
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "bearer"
+}
+
+
+--------------------------------------------------------------------------------
+1.3 GET ALL APPS (Do'kondagi barcha faol ilovalarni olish)
+--------------------------------------------------------------------------------
+Endpoint:     GET /apps/
+Auth:         No
+
+[Response 200 OK]
+[
+  {
+    "id": "a1b2c3d4-0000-0000-0000-000000000001",
+    "name": "iDev ERP Mobile",
+    "package_name": "com.idev.erp",
+    "description": "Kompaniya ichki boshqaruv ilovasi",
+    "icon_url": "https://storage.supabase.co/v1/object/public/app-icons/erp.png",
+    "category": "Productivity",
+    "is_active": true,
+    "created_at": "2026-09-23T10:00:00Z",
+    "versions": [
+      {
+        "id": "v1a2b3c4-0000-0000-0000-000000000001",
+        "version_code": 102,
+        "version_name": "1.0.2",
+        "changelog": "- Yangi bildirishnomalar qo'shildi\n- Buglar tuzatildi",
+        "download_url": "https://storage.supabase.co/v1/object/public/app-apks/erp-v1.0.2.apk",
+        "file_size_bytes": 25480000,
+        "created_at": "2026-09-23T12:00:00Z"
+      }
+    ]
+  }
+]
+
+
+--------------------------------------------------------------------------------
+1.4 CHECK OTA UPDATE (Ilova yangilanishini tekshirish)
+--------------------------------------------------------------------------------
+Endpoint:     GET /apps/check-update/{package_name}?current_version_code={code}
+Auth:         No
+
+[Example Request]
+GET /apps/check-update/com.idev.erp?current_version_code=100
+
+[Response 200 OK — Update mavjud bo'lsa]
+{
+  "update_available": true,
+  "app_name": "iDev ERP Mobile",
+  "latest_version": {
+    "version_name": "1.0.2",
+    "version_code": 102,
+    "changelog": "- Yangi bildirishnomalar qo'shildi\n- Buglar tuzatildi",
+    "download_url": "https://storage.supabase.co/v1/object/public/app-apks/erp-v1.0.2.apk",
+    "file_size_bytes": 25480000
+  }
+}
+
+[Response 200 OK — Update bo'lmasa]
+{
+  "update_available": false,
+  "app_name": "iDev ERP Mobile",
+  "latest_version": null
+}
+
+
+--------------------------------------------------------------------------------
+1.5 GET ACTIVE EVENT THEME (Aktiv bayram mavzusini olish)
+--------------------------------------------------------------------------------
+Endpoint:     GET /theme/active
+Auth:         No
+
+[Response 200 OK — Bayram mavzusi faol bo'lsa]
+{
+  "id": "t1-theme-uuid-1234",
+  "theme_name": "New Year 2027",
+  "is_active": true,
+  "effect_type": "snowfalling",
+  "effect_config": {
+    "intensity": "high",
+    "speed": 2.0,
+    "particle_color": "#FFFFFF",
+    "snowflake_count": 50
+  },
+  "banner_url": "https://storage.supabase.co/v1/object/public/app-assets/banners/new_year.png",
+  "primary_color": "#E53935"
+}
+
+[Response 200 OK — Hech qanday event faol bo'lmasa]
+null
+(Mantiq: Response null qaytsa, barcha effektlarni o'chiring va do'konni standart ko'rinishda render qiling.)
+
+
+================================================================================
+SECTION 2: ADMIN PANEL ENDPOINTS (Faqat Admin/Developer uchun)
+================================================================================
+
+--------------------------------------------------------------------------------
+2.1 CREATE APP (Yangi ilova kartasini yaratish)
+--------------------------------------------------------------------------------
+Endpoint:     POST /apps/
+Auth:         Yes (Bearer Token)
+
+[Request Body]
+{
+  "name": "iDev Messenger",
+  "package_name": "com.idev.messenger",
+  "description": "Ichki muloqot va chat ilovasi",
+  "icon_url": "https://storage.supabase.co/v1/object/public/app-icons/messenger.png",
+  "category": "Social"
+}
+
+[Response 201 Created]
+{
+  "id": "b2c3d4e5-0000-0000-0000-000000000002",
+  "name": "iDev Messenger",
+  "package_name": "com.idev.messenger",
+  "description": "Ichki muloqot va chat ilovasi",
+  "icon_url": "https://storage.supabase.co/v1/object/public/app-icons/messenger.png",
+  "category": "Social",
+  "is_active": true,
+  "created_at": "2026-09-23T14:30:00Z",
+  "versions": []
+}
+
+
+--------------------------------------------------------------------------------
+2.2 ADD APP VERSION (Ilovaga yangi APK versiya qo'shish)
+--------------------------------------------------------------------------------
+Endpoint:     POST /apps/version
+Auth:         Yes (Bearer Token)
+
+[Request Body]
+{
+  "app_id": "b2c3d4e5-0000-0000-0000-000000000002",
+  "version_code": 100,
+  "version_name": "1.0.0",
+  "changelog": "Birinchi reliz va barqaror ishlaydigan versiya",
+  "download_url": "https://storage.supabase.co/v1/object/public/app-apks/messenger-v1.0.0.apk",
+  "file_size_bytes": 18200000,
+  "min_os_version": "Android 8.0"
+}
+
+[Response 201 Created]
+{
+  "id": "v2b3c4d5-0000-0000-0000-000000000002",
+  "version_code": 100,
+  "version_name": "1.0.0",
+  "changelog": "Birinchi reliz va barqaror ishlaydigan versiya",
+  "download_url": "https://storage.supabase.co/v1/object/public/app-apks/messenger-v1.0.0.apk",
+  "file_size_bytes": 18200000,
+  "created_at": "2026-09-23T15:00:00Z"
+}
+
+
+--------------------------------------------------------------------------------
+2.3 UPDATE APP UI & ANIMATION CONFIG (Ilova shrifti va animatsiyalarini sozlash)
+--------------------------------------------------------------------------------
+Endpoint:     PATCH /apps/{app_id}/ui-config
+Auth:         Yes (Bearer Token)
+
+[Request Body]
+{
+  "system_font": "SF Pro",
+  "animation_url": "https://storage.supabase.co/v1/object/public/app-assets/animations/snow_lottie.json",
+  "animation_config": {
+    "enable_skeleton": true,
+    "button_animation": "bounce",
+    "card_transition": "fade_in",
+    "duration_ms": 300
+  }
+}
+
+[Response 200 OK]
+{
+  "id": "b2c3d4e5-0000-0000-0000-000000000002",
+  "name": "iDev Messenger",
+  "package_name": "com.idev.messenger",
+  "system_font": "SF Pro",
+  "animation_url": "https://storage.supabase.co/v1/object/public/app-assets/animations/snow_lottie.json",
+  "animation_config": {
+    "enable_skeleton": true,
+    "button_animation": "bounce",
+    "card_transition": "fade_in",
+    "duration_ms": 300
+  },
+  "is_active": true
+}
+
+
+--------------------------------------------------------------------------------
+2.4 CREATE SYSTEM EVENT THEME (Yangi bayram mavzusini yaratish)
+--------------------------------------------------------------------------------
+Endpoint:     POST /theme/
+Auth:         Yes (Bearer Token)
+
+[Request Body]
+{
+  "theme_name": "New Year 2027",
+  "effect_type": "snowfalling",
+  "effect_config": {
+    "intensity": "high",
+    "speed": 2.0,
+    "particle_color": "#FFFFFF",
+    "snowflake_count": 50
+  },
+  "banner_url": "https://storage.supabase.co/v1/object/public/app-assets/banners/new_year.png",
+  "primary_color": "#E53935"
+}
+
+[Response 201 Created]
+{
+  "id": "t1-theme-uuid-1234",
+  "theme_name": "New Year 2027",
+  "is_active": false,
+  "effect_type": "snowfalling",
+  "effect_config": {
+    "intensity": "high",
+    "speed": 2.0,
+    "particle_color": "#FFFFFF",
+    "snowflake_count": 50
+  },
+  "banner_url": "https://storage.supabase.co/v1/object/public/app-assets/banners/new_year.png",
+  "primary_color": "#E53935"
+}
+
+
+--------------------------------------------------------------------------------
+2.5 ACTIVATE THEME (Bayram mavzusini yoqish / Snowfalling set qilish)
+--------------------------------------------------------------------------------
+Endpoint:     POST /theme/{theme_id}/activate
+Auth:         Yes (Bearer Token)
+
+[Response 200 OK]
+{
+  "id": "t1-theme-uuid-1234",
+  "theme_name": "New Year 2027",
+  "is_active": true,
+  "effect_type": "snowfalling",
+  "effect_config": {
+    "intensity": "high",
+    "speed": 2.0,
+    "particle_color": "#FFFFFF",
+    "snowflake_count": 50
+  },
+  "banner_url": "https://storage.supabase.co/v1/object/public/app-assets/banners/new_year.png",
+  "primary_color": "#E53935"
+}
+
+
+--------------------------------------------------------------------------------
+2.6 DEACTIVATE ALL THEMES (Barcha effektlarni o'chirish / Default holda)
+--------------------------------------------------------------------------------
+Endpoint:     POST /theme/deactivate-all
+Auth:         Yes (Bearer Token)
+
+[Response 200 OK]
+{
+  "message": "Barcha event effektlari o'chirildi, standart ko'rinishga qaytdi."
+}
+
+
+================================================================================
+SECTION 3: STANDARD ERROR RESPONSES
+================================================================================
+
+3.1 UNAUTHORIZED (401)
+{
+  "detail": "Tokenni tasdiqlab bo'lmadi"
+}
+
+3.2 NOT FOUND (404)
+{
+  "detail": "Ilova yoki Resurs topilmadi"
+}
+
+3.3 BAD REQUEST (400)
+{
+  "detail": "Ushbu package_name allaqachon ro'yxatdan o'tgan."
+}
+================================================================================
