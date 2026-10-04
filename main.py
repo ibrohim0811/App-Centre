@@ -1,14 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.config import settings
-from app.api.v1.router import api_router
-from app.api.v1.router import api_router
 
+from services.auth import router as auth
 
 app = FastAPI(
-    title=settings.PROJECT_NAME,
-    version=settings.VERSION,
-    openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    title="App-Centre by iDev",
+    version="1.026",
 )
 
 app.add_middleware(
@@ -18,12 +15,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(auth)
 
 @app.get("/")
 async def root():
     return {
-        "message": f"Welcome to {settings.PROJECT_NAME} API",
+        "message": "Welcome to App-centre API",
         "docs": "/docs",
     }

@@ -4,15 +4,14 @@ from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
-from app.core.config import settings
-from app.core.database import Base
-import app.models  # Modellarni yuklaymiz
+from core.config import settings
+from core.session import Base
+import models  # Modellarni yuklaymiz
 
 config = context.config
 
 # env fayldan DIRECT_DATABASE_URL ni olamiz (Alembic uchun)
-config.set_main_option("sqlalchemy.url", settings.DIRECT_DATABASE_URL)
-
+config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
